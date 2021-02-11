@@ -39,7 +39,7 @@ namespace WebsocketServer.SocketsManager
             return Guid.NewGuid().ToString("N");
         }
 
-        private void AddSocket(WebSocket socket)
+        public void AddSocket(WebSocket socket)
         {
             _connections.TryAdd(GetConnectionId(), socket);
         }
