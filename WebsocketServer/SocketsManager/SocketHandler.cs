@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WebsocketServer.SocketsManager
 {
-    public class SocketHandler
+    public abstract class SocketHandler
     {
         public ConnectionManager Connections { get; set; }
 
@@ -33,5 +33,20 @@ namespace WebsocketServer.SocketsManager
             await socket.SendAsync(new ArraySegment<byte>(Encoding.ASCII.GetBytes(message), 0, message.Length),
                 WebSocketMessageType.Text, true, CancellationToken.None);
         }
+
+        public async Task SendMessage(string id, string message)
+        {
+            await SendMessage(Connections.GetSocketsById(id), message);
+        }
+
+        public async Task SendMessageAll(string message)
+        {
+            foreach (var con in Connections.GetAllConnections())
+            {
+                await SendMessage(con.Value, message);
+            }
+        }
+
+        public abstract Task Receive(WebSocket socket, WebSocketReceiveResult result, byte[] buffer);
     }
 }
